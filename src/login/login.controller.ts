@@ -1,22 +1,27 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { AuthService } from 'src/auth/auth.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { AllowAnnonymous } from 'src/auth/decorators/public-route.decorator';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { AllowAnnonymous } from '../auth/decorators/public-route.decorator';
+import { AuthService } from '../auth/auth.service';
+import { UsersService } from '../users/users.service';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { CreateUserDto } from 'src/users/users.model';
 
-@Controller('login')
+@Controller()
 export class LoginController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+  ) {}
 
   @AllowAnnonymous()
   @UseGuards(LocalAuthGuard)
-  @Post()
+  @Post('/login')
   async login(@Request() req) {
     return this.authService.loginUser(req.user);
   }
 
-  @Get('profile')
-  async getProfile(@Request() req) {
-    return req.user;
+  @AllowAnnonymous()
+  @Post('/register')
+  async getProfile(@Body() body: CreateUserDto) {
+    return this.userService.addUser(body);
   }
 }
