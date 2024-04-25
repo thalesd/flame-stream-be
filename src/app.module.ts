@@ -19,7 +19,6 @@ import configuration from 'config/configuration';
     }),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {
-        console.log(configService.get('database.host'));
         return {
           uri: configService.get('database.host'),
         };

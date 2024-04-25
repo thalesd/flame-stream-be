@@ -1,9 +1,17 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AllowAnnonymous } from '../auth/decorators/public-route.decorator';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
-import { CreateUserDto } from 'src/users/users.model';
+import { CreateUserDto } from './models/model.createUserDto';
+import { LoginUserDto } from './models/model.loginUserDto';
 
 @Controller()
 export class LoginController {
@@ -15,8 +23,8 @@ export class LoginController {
   @AllowAnnonymous()
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Request() req) {
-    return this.authService.loginUser(req.user);
+  async login(@Body() body: LoginUserDto) {
+    return this.authService.loginUser(body);
   }
 
   @AllowAnnonymous()

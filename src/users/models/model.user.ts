@@ -3,22 +3,19 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema()
+@Schema({
+  autoIndex: true,
+})
 export class User {
-  @Prop()
+  @Prop({ required: true })
   username: string;
 
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
   @Prop()
   rememberMe: boolean;
 }
-
 export const UserSchema = SchemaFactory.createForClass(User);
 
-export type CreateUserDto = {
-  username: string;
-  password: string;
-  rememberMe: boolean;
-};
+UserSchema.index({ username: 1 }, { unique: true });
